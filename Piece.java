@@ -7,10 +7,33 @@ package chess;
 
 //@author 710568
 
+import java.awt.Graphics;
+import java.awt.Color;
+
 public class Piece {
-    private int x, y;
+    private int size;
     private String type;
-    public Piece() {
+    private String color;
+    
+    public Piece(String type, String color) {
+        this.size = 65;
+        this.color = color;
+    }
+    
+    public void update() {
         
+    }
+    
+    public void draw(Graphics g, int x, int y, boolean selected) {
+        if (selected) {
+            g.setColor(Color.WHITE);
+        }
+        else if (color.equals("White")) {
+            g.setColor(Color.BLUE);
+        }
+        else {
+            g.setColor(Color.GRAY);
+        }
+        g.fillOval((x * 75) + 30, (y * 75) + 30, size, size);
     }
 }

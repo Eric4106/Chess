@@ -7,27 +7,23 @@ package chess;
 
 //@author 710568
 
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import javax.swing.JFrame;
 
 public class Chess {
     public static void main(String[] args) {
-        JFrame j = new JFrame("Checkers");
-        Board c = new Board();
-        j.add(c);
+        JFrame j = new JFrame("Chess");
+        Board b = new Board();
+        j.add(b);
         j.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         j.setSize(1200, 675);
         j.setVisible(true);
         j.setLocationRelativeTo(null);
-        j.addKeyListener(new KeyAdapter() {
+        j.addMouseListener(new MouseAdapter() {
             @Override
-            public void keyPressed(KeyEvent e) {
-                c.keyPressed(e);
-            }
-            @Override
-            public void keyReleased(KeyEvent e) {
-                c.keyReleased(e);
+            public void mouseClicked(MouseEvent e) {
+                b.mouseClicked(e);
             }
         });
     }
