@@ -19,8 +19,11 @@ public class Board extends JPanel {
     Piece[][] pieces = new Piece[8][8];
     Timer timer = new Timer();
     Rectangle[][] bounds = new Rectangle[8][8];
-    boolean[][] aSelected = new boolean[8][8];
-    boolean selected = false;
+    boolean[][] selected = new boolean[8][8];
+    boolean sSelected;
+    int iSelected;
+    int iiSelected;
+    String turn = "blue";
     
     public Board() {
         timer.scheduleAtFixedRate(new Task(), 100, 1000/6);
@@ -32,10 +35,12 @@ public class Board extends JPanel {
         super.paintComponent(g);
         this.setBackground(Color.DARK_GRAY);
         drawBoard(g);
+        g.setColor(Color.WHITE);
+        g.drawString("It is the " + turn + " player's turn", 800, 300);
         for (int i = 0; i < 8; i++) {
             for (int ii = 0; ii < 8; ii++) {
                 if (pieces[i][ii] == null) continue;
-                pieces[i][ii].draw(g, ii, i, aSelected[ii][i]);
+                pieces[i][ii].draw(g, ii, i, selected[ii][i]);
             }
         }
     }
@@ -50,7 +55,7 @@ public class Board extends JPanel {
         boolean[][] isWhite = new boolean[8][8];
         for (int i = 0; i < 8; i++) {
             for (int ii = 0; ii< 8; ii++) {
-                bounds[i][ii] = new Rectangle((i * 75) + 25, (ii * 75) + 25, 75, 75);
+                bounds[i][ii] = new Rectangle((i * 75) + 33, (ii * 75) + 53, 75, 75);
                 if (isEven(i + ii)) {
                     isWhite[i][ii] = true;
                 }
@@ -81,27 +86,27 @@ public class Board extends JPanel {
     }
     
     public void generatePieces() {
-        pieces[0][0] = new Piece("Rook", "Black");
-        pieces[0][1] = new Piece("Knight", "Black");
-        pieces[0][2] = new Piece("Bishop", "Black");
-        pieces[0][3] = new Piece("Queen", "Black");
-        pieces[0][4] = new Piece("King", "Black");
-        pieces[0][5] = new Piece("Bishop", "Black");
-        pieces[0][6] = new Piece("Knight", "Black");
-        pieces[0][7] = new Piece("Rook", "Black");
+        pieces[0][0] = new Piece("Rook", "black");
+        pieces[0][1] = new Piece("Knight", "black");
+        pieces[0][2] = new Piece("Bishop", "black");
+        pieces[0][3] = new Piece("Queen", "black");
+        pieces[0][4] = new Piece("King", "black");
+        pieces[0][5] = new Piece("Bishop", "black");
+        pieces[0][6] = new Piece("Knight", "black");
+        pieces[0][7] = new Piece("Rook", "black");
         
-        pieces[7][0] = new Piece("Rook", "White");
-        pieces[7][1] = new Piece("Knight", "White");
-        pieces[7][2] = new Piece("Bishop", "White");
-        pieces[7][3] = new Piece("King", "White");
-        pieces[7][4] = new Piece("Queen", "White");
-        pieces[7][5] = new Piece("Bishop", "White");
-        pieces[7][6] = new Piece("Knight", "White");
-        pieces[7][7] = new Piece("Rook", "White");
+        pieces[7][0] = new Piece("Rook", "blue");
+        pieces[7][1] = new Piece("Knight", "blue");
+        pieces[7][2] = new Piece("Bishop", "blue");
+        pieces[7][3] = new Piece("King", "blue");
+        pieces[7][4] = new Piece("Queen", "blue");
+        pieces[7][5] = new Piece("Bishop", "blue");
+        pieces[7][6] = new Piece("Knight", "blue");
+        pieces[7][7] = new Piece("Rook", "blue");
         
         for (int i = 0; i < 8; i++) {
-            pieces[1][i] = new Piece("Pawn", "Black");
-            pieces[6][i] = new Piece("Pawn", "White");
+            pieces[1][i] = new Piece("Pawn", "black");
+            pieces[6][i] = new Piece("Pawn", "blue");
         }
     }
     
@@ -110,15 +115,57 @@ public class Board extends JPanel {
         for (int i = 0; i < 8; i++) {
             for (int ii = 0; ii < 8; ii++) {
                 if (mousePos.intersects(bounds[i][ii])) {
-                    if (pieces[i][ii] == null && selected) {
-                        
+                    if (pieces[ii][i] == null) {
+                        if (sSelected) {
+                            if (pieces[iiSelected][iSelected].legalMove(pieces, i , ii)) {
+                                pieces[ii][i] = pieces[iiSelected][iSelected];
+                                pieces[iiSelected][iSelected] = null;
+                                if (turn.equals("blue")) {
+                                    turn = "black";
+                                }
+                                else {
+                                    turn = "blue";
+                                }
+                                selected[i][ii] = false;
+                                sSelected = false;
+                            }
+                        }
                     }
-                    else if (1 == 1) {
-                        aSelected[i][ii] = true;
-                        selected = true;
-                    }
-                    else if (1 == 1) {
-                        
+                    else {
+                        if (pieces[ii][i].getColor().equals(turn)) {
+                            if (sSelected) {
+                                if (selected[i][ii]) {
+                                    selected[i][ii] = false;
+                                    sSelected = false;
+                                }
+                                else {
+                                    selected[iSelected][iiSelected] = false;
+                                    selected[i][ii] = true;
+                                    iSelected = i;
+                                    iiSelected = ii;
+                                }
+                            }
+                            else {
+                                selected[i][ii] = true;
+                                sSelected = true;
+                                iSelected = i;
+                                iiSelected = ii;
+                            }
+                        }
+                        else if (sSelected) {
+                            if (pieces[iiSelected][iSelected].legalMove(pieces, i, ii)) {
+                            pieces[ii][i] = pieces[iiSelected][iSelected];
+                            pieces[iiSelected][iSelected] = null;
+                            if (turn.equals("blue")) {
+                                turn = "black";
+                            }
+                            else {
+                                turn = "blue";
+                            }
+                            selected[i][ii] = false;
+                            sSelected = false;
+                            }
+                        }
                     }
                 }
             }
