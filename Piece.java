@@ -14,11 +14,13 @@ public class Piece {
     private int size;
     private String type;
     private String color;
+    private boolean firstPawnMove;
     
     public Piece(String type, String color) {
         this.size = 65;
         this.color = color;
         this.type = type;
+        this.firstPawnMove = true;
     }
     
     public String getType() {
@@ -29,13 +31,77 @@ public class Piece {
         return color;
     }
     
-    public boolean legalMove(Piece[][] pieces, int i, int ii) {
+    public boolean legalMove(Piece[][] pieces, int ni, int nii, int ci, int cii, boolean attack) {
         boolean legal = false;
-        for (int a = -7; a < 8; a++) {
-            if (i + a < 0 || i + a > 8) continue;
-            for (int b = -7; b < 8; b++) {
-                if (ii + b < 0 || ii + b > 8) continue;
-                legal = true;
+        for (int i = -7; i < 8; i++) {
+            if (ci + i < 0 || ci + i > 7) continue;
+            for (int ii = -7; ii < 8; ii++) {
+                if (cii + ii < 0 || cii + ii > 7) continue;
+                if (type.equals("Pawn")) {
+                    if (color.equals("blue")) {
+                        if (cii - 1 == nii) {
+                            if (attack) {
+                                if (ci + 1 == ni || ci - 1 == ni) {
+                                    legal = true;
+                                }
+                            }
+                            else {
+                                if (ci == ni) {
+                                    legal = true;
+                                }
+                            }
+                        }
+                        else if (cii - 2 == nii && firstPawnMove) {
+                            if (ci == ni) {
+                                legal = true;
+                                firstPawnMove = false;
+                            }
+                        }
+                    }
+                    else {
+                        if (cii + 1 == nii) {
+                            if (attack) {
+                                if (ci + 1 == ni || ci - 1 == ni) {
+                                    legal = true;
+                                }
+                            }
+                            else {
+                                if (ci == ni) {
+                                    legal = true;
+                                }
+                            }
+                        }
+                        else if (cii + 2 == nii && firstPawnMove) {
+                            legal = true;
+                            firstPawnMove = false;
+                        }
+                    }
+                }
+                else if (type.equals("Rook")) {
+                    if (ci == ni || cii == nii) {
+                        legal = true;
+                    }
+                }
+                else if (type.equals("Knight")) {
+                    if (((ci - ni) / (cii - nii) == 1 / 2 || (ci - ni) / (cii - nii) == -1 / 2 || (ci - ni) / (cii - nii) == 2 || (ci - ni) / (cii - nii) == -2) && (ci - ni < 3 && ci - ni > -3 && cii - nii < 3 && cii - nii > -3)) {
+                        legal = true;
+                    }
+                }
+                else if (type.equals("Bishop")) {
+                    if ((ci - ni) / (cii - nii) == 1 || (ci - ni) / (cii - nii) == -1) {
+                        legal = true;
+                    }
+                }
+                else if (type.equals("Queen")) {
+                    if (ci == ni || cii == nii || (ci - ni) / (cii - nii) == 1 || (ci - ni) / (cii - nii) == -1) {
+                        legal = true;
+                    }
+                }
+                else if (type.equals("King")) {
+                    if ((ci - ni < 2 && ci - ni > -2 && cii - nii < 2 && cii - nii > -2)) {
+                        legal = true;
+                    }
+                }
             }
         }
         return legal;
