@@ -43,11 +43,13 @@ public class Piece {
                             if (attack) {
                                 if (ci + 1 == ni || ci - 1 == ni) {
                                     legal = true;
+                                    firstPawnMove = false;
                                 }
                             }
                             else {
                                 if (ci == ni) {
                                     legal = true;
+                                    firstPawnMove = false;
                                 }
                             }
                         }
@@ -63,11 +65,13 @@ public class Piece {
                             if (attack) {
                                 if (ci + 1 == ni || ci - 1 == ni) {
                                     legal = true;
+                                    firstPawnMove = false;
                                 }
                             }
                             else {
                                 if (ci == ni) {
                                     legal = true;
+                                    firstPawnMove = false;
                                 }
                             }
                         }
